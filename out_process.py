@@ -8,7 +8,11 @@ import os
 path = r'C:\Users\janet\Documents\nBox\0. SOAFP-PyCHAM output\PR3_simulation\Simulation results\20Nov_1700_1759_89VOCs_20bins'
 os.chdir(path)
 
-##### Size bin radius (unit: um & mm)
+# nonSOA components, a list that contains the names of nonSOA components, given by user
+nonSOA = ["core", "H2O", "AMMSUL"]
+components_number_SOA = components_number-len(nonSOA)
+
+##### Size bin radius (unit: um)
 radius_file_path = r"size_bin_radius"
 radius = open(radius_file_path, "r+")
 radius = radius.readlines()
@@ -17,7 +21,7 @@ radius_um.to_csv('Radius (\u03BCm).csv')
 radius = [radius[i].split(",") for i in range(2, len(radius))]
 radius = np.array(radius).astype(float)
 
-##### Size bin diameter (unit: um & mm)
+##### Size bin diameter (unit: um)
 diameter = radius*2
 diameter_um = diameter
 pd.DataFrame(diameter_um).to_csv('Diameter (\u03BCm).csv')
@@ -82,13 +86,6 @@ organic_alkoxy_radical_index = [int(i) for i in organic_alkoxy_radical_index]
 #Extract size_bin_number and components_number
 bin_number = int(information[0].split(",")[1])
 components_number = int(information[1].split(",")[1])
-
-# nonSOA components, a txt file "nonSOA.txt" is given by user in which there is a line containing the names of all nonSOA components (e.g. core, H2O, AMMSUL)
-nonSOA_path = r"nonSOA.txt"
-nonSOA = open(nonSOA_path, "r+")
-nonSOA = nonSOA.readlines()
-nonSOA = nonSOA[0].split(", ")
-components_number_SOA = components_number-len(nonSOA)
 
 #Extract saturation vapor pressure at 298.15K of species
 saturation_vapor_pressure = information[13].split(",")
@@ -359,42 +356,6 @@ particle_number_concentration_wet = open(particle_number_concentration_wet_file_
 particle_number_concentration_wet = particle_number_concentration_wet.readlines()
 particle_number_concentration_wet= pd.DataFrame([particle_number_concentration_wet[i].split(",") for i in range(2, len(particle_number_concentration_wet))])
 particle_number_concentration_wet.to_csv('particle_number_concentration_wet_number.csv')
-
-### Get information of tracked components
-# the path (path_model_var) of txt file "Model variable.txt" is given by user
-path_model_var = r'C:\Users\24979\PyCHAM\PyCHAM\output\Chemical kpp file\41bins\inputs'
-os.chdir(path_model_var)
-
-# get tracked components' names
-model_variable_path = r"Model variable.txt"
-model_variable = open(model_variable_path, "r+")
-model_variable = model_variable.readlines()
-model_variable = np.array([model_variable[i].split("=") for i in range(1, len(model_variable))])
-tracked_comp = model_variable[model_variable[:,0] == "tracked_comp "]
-tracked_comp = tracked_comp[0][1].split(", ")
-tracked_comp[0] = tracked_comp[0][1:]
-tracked_comp[-1] = tracked_comp[-1][:-1]
-
-os.chdir(path)
-for i in range(len(tracked_comp)):
-    rate_of_change_file_path = tracked_comp[i] + "_rate_of_change"
-    rate_of_change = open(rate_of_change_file_path, "r+")
-    rate_of_change = rate_of_change.readlines()
-    rate_of_change = np.array([rate_of_change[i].split(",") for i in range(1, len(rate_of_change))])
-    rate_of_change = rate_of_change.astype(float)
-    for j in range(len(rate_of_change[0])):
-        rate_of_change[0][j] = rate_of_change[0][j] + 1
-
-    # number concentration, unit: molecules/cc.s (air)
-    rate_of_change_number = rate_of_change
-    rate_of_change_number = rate_of_change_number.transpose()
-    pd.DataFrame(rate_of_change_number).to_csv(tracked_comp[i]+" rate of change (molecules.(cc.s (air)).\u207B\u00b9).csv", index=False, header=False)
-
-    # ppb
-    rate_of_change_ppb = rate_of_change
-    rate_of_change_ppb[1:] = (rate_of_change_ppb[1:].transpose() / factor[:-1]).transpose()
-    rate_of_change_ppb = rate_of_change_ppb.transpose()
-    pd.DataFrame(rate_of_change_ppb).to_csv(tracked_comp[i]+" rate of change (ppb.s\u207B\u00b9).csv", index=False, header=False)
 
 ##### total_concentration_of_injected_components (mass concentration, unit: ug/m3)
 total_concentration_of_injected_components_file_path = r"total_concentration_of_injected_components"
