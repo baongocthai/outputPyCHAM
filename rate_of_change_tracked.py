@@ -22,12 +22,27 @@ for file in directories:
         # number concentration, unit: molecules/cc.s (air)
         rate_of_change_number = rate_of_change
         rate_of_change_number = rate_of_change_number.transpose()
-        pd.DataFrame(rate_of_change_number).to_csv(file + " (molecules.(cc.s (air)).\u207B\u00b9).csv", index=False,
+        rate_of_change_number_with_sum = np.empty([len(rate_of_change_number), len(rate_of_change_number[0]) + 1])
+        sum_time = np.sum(rate_of_change_number[:, 1:], axis=0)
+        sum_time = np.concatenate((np.array([" "]), sum_time))
+        sum_time = np.concatenate((sum_time, np.array([" "])))
+        for i in range(len(rate_of_change_number)):
+            rate_of_change_number_with_sum[i] = np.append(rate_of_change_number[i],
+                                                          np.sum(rate_of_change_number[i][1:]))
+        rate_of_change_number_with_sum = np.vstack((rate_of_change_number_with_sum, sum_time))
+        pd.DataFrame(rate_of_change_number_with_sum).to_csv(file + " (molecules.(cc.s (air)).\u207B\u00b9).csv", index=False,
                                                    header=False)
 
         # ppb
         rate_of_change_ppb = rate_of_change
         rate_of_change_ppb[1:] = (rate_of_change_ppb[1:].transpose() / factor[:-1]).transpose()
         rate_of_change_ppb = rate_of_change_ppb.transpose()
-        pd.DataFrame(rate_of_change_ppb).to_csv(file + " rate of change (ppb.s\u207B\u00b9).csv", index=False,
+        rate_of_change_ppb_with_sum = np.empty([len(rate_of_change_ppb), len(rate_of_change_ppb[0]) + 1])
+        sum_time = np.sum(rate_of_change_ppb[:, 1:], axis=0)
+        sum_time = np.concatenate((np.array([" "]), sum_time))
+        sum_time = np.concatenate((sum_time, np.array([" "])))
+        for i in range(len(rate_of_change_ppb)):
+            rate_of_change_ppb_with_sum[i] = np.append(rate_of_change_ppb[i], np.sum(rate_of_change_ppb[i][1:]))
+        rate_of_change_ppb_with_sum = np.vstack((rate_of_change_ppb_with_sum, sum_time))
+        pd.DataFrame(rate_of_change_ppb_with_sum).to_csv(file + " rate of change (ppb.s\u207B\u00b9).csv", index=False,
                                                 header=False)
