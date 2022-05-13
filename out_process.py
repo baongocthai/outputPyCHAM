@@ -2,16 +2,17 @@
 ## BN ##
 import numpy as np
 import pandas as pd 
-
+from rdkit import Chem
 # Set working directory - input folder of interest
 import os
 path = r'C:\Users\janet\Documents\nBox\0. SOAFP-PyCHAM output\PR3_simulation\Simulation results\20Nov_1700_1759_89VOCs_20bins'
 os.chdir(path)
 
-# nonSOA components, a list that contains the names of nonSOA components, given by user
+##### variables that are given by user
+# nonSOA components, a list that contains the names of nonSOA components
 nonSOA = ["core", "H2O", "AMMSUL"]
-components_number_SOA = components_number-len(nonSOA)
-folder_name = '20Nov_1700_1759_89VOCs_20bins'
+# name of output folder
+folder_name = '_20Nov_1700_1759_89VOCs_20bins'
 
 ##### Size bin radius (unit: um)
 radius_file_path = r"size_bin_radius"
@@ -56,7 +57,7 @@ information = open(information_file_path, "r+")
 information = information.readlines()
 molecular_weight = information[2].split(",")
 # Fix the first and last
-molecular_weight = molecular_weight[1:len(molecular_weight)] 
+molecular_weight = molecular_weight[1:len(molecular_weight)]
 molecular_weight[0] = molecular_weight[0][1:len(molecular_weight[0])]
 molecular_weight[-1] = molecular_weight[-1][0:len(molecular_weight[-1])-2]
 # Convert to float
@@ -87,6 +88,7 @@ organic_alkoxy_radical_index = [int(i) for i in organic_alkoxy_radical_index]
 #Extract size_bin_number and components_number
 bin_number = int(information[0].split(",")[1])
 components_number = int(information[1].split(",")[1])
+components_number_SOA = components_number-len(nonSOA)
 
 #Extract saturation vapor pressure at 298.15K of species
 saturation_vapor_pressure = information[13].split(",")
@@ -391,8 +393,8 @@ for i in range(len(HCratio)):
 HCratio = HCratio + [' '] + [' ']
 
 # Combine species information
-species_information = pd.DataFrame({'Species':species, 
-                                    'Molecular weight (g/mol)': molecular_weight, 
+species_information = pd.DataFrame({'Species':species,
+                                    'Molecular weight (g/mol)': molecular_weight,
                                     'O:C ratio': OCratio,
                                     'H:C ratio': HCratio,
                                     'Saturation vapor pressure at 298.15K':saturation_vapor_pressure})
@@ -403,5 +405,5 @@ species_information['Peroxy Radicals'] = organic_peroxy_radical
 species_information.to_csv('species_information'+folder_name+'.csv')
 
 #Other files
-pd.DataFrame(gas_phase).to_csv('gas_phase.csv')
+pd.DataFrame(gas_phase).to_csv('gas_phase'+folder_name+'.csv')
 pd.DataFrame(concentration).to_csv("concentration_raw"+folder_name+".csv")
