@@ -5,13 +5,13 @@ import pandas as pd
 from math import pi
 
 
-def surface_for_each_component(radius_um, components_number, particulate_phase,time):
+def surface_for_each_component(radius_um, components_number, particulate_phase,time, folder_name):
     # radius_um: radius of each size bin at each time (um), extracted from PyCHAM output size_bin_radius file, \
     # given in post processing file (e.g. 2.155903426506518283e-03 um)
     # components_number: number of components, given in post processing file
     # particulate_phase: mass concentration corresponding to each component \
     # in each size bin at each time (ug/m3), given in post processing file (e.g. 7.460121947903269492e-09ug/m3)
-
+    
     surface = particulate_phase
     for component in range(len(particulate_phase)):
         for times in range(len(particulate_phase[0])):
@@ -25,9 +25,9 @@ def surface_for_each_component(radius_um, components_number, particulate_phase,t
     # col_name: name of each column
     col_name = np.array([[' ', ' ']+[str(i)+' minute' for i in range(len(time))]])
     surface = np.vstack((col_name, surface))
-    pd.DataFrame(surface).to_csv('surface_for_each_component.csv', index=False, header=False)
+    pd.DataFrame(surface).to_csv('surface_for_each_component'+folder_name+'.csv', index=False, header=False)
 
-def surface_for_SOA_total(radius_um, bin_number, components_number_SOA, particulate_phase_SOA,time):
+def surface_for_SOA_total(radius_um, bin_number, components_number_SOA, particulate_phase_SOA,time, folder_name):
     # radius_um: radius of each size bin at each time (um), extracted from PyCHAM output size_bin_radius file, \
     # given in post processing file (e.g. 2.155903426506518283e-03 um)
     # components_number_SOA: number of SOA components, given in post processing file
@@ -53,4 +53,4 @@ def surface_for_SOA_total(radius_um, bin_number, components_number_SOA, particul
             bin_surface.append((temp_sum[times]) * pi * (
                             radius_um.transpose()[bins][times] * 2) ** 2)
         surface.append(bin_surface)
-    pd.DataFrame(surface).to_csv('surface_for_total.csv', index=False, header=False)
+    pd.DataFrame(surface).to_csv('surface_for_total'+folder_name+'.csv', index=False, header=False)
