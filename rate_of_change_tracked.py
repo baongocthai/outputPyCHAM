@@ -8,6 +8,7 @@ path = r'C:\Users\janet\Documents\nBox\0. SOAFP-PyCHAM output\PR3_simulation\Sim
 os.chdir(path)
 directories = os.listdir(path)
 
+folder_name = op.folder_name
 factor = op.factor
 file_list = []
 for file in directories:
@@ -29,8 +30,7 @@ for file in directories:
         for i in range(len(rate_of_change_number)):
             rate_of_change_number_with_sum[i] = np.append(rate_of_change_number[i],
                                                           np.sum(rate_of_change_number[i][1:]))
-        rate_of_change_number_with_sum = np.vstack((rate_of_change_number_with_sum, sum_time))
-        pd.DataFrame(rate_of_change_number_with_sum).to_csv(file + " (molecules.(cc.s (air)).\u207B\u00b9).csv", index=False,
+        pd.DataFrame(rate_of_change_number).to_csv(file + " (molecules.(cc.s (air)).\u207B\u00b9)"+folder_name+".csv", index=False,
                                                    header=False)
 
         # ppb
@@ -44,5 +44,5 @@ for file in directories:
         for i in range(len(rate_of_change_ppb)):
             rate_of_change_ppb_with_sum[i] = np.append(rate_of_change_ppb[i], np.sum(rate_of_change_ppb[i][1:]))
         rate_of_change_ppb_with_sum = np.vstack((rate_of_change_ppb_with_sum, sum_time))
-        pd.DataFrame(rate_of_change_ppb_with_sum).to_csv(file + " rate of change (ppb.s\u207B\u00b9).csv", index=False,
+        pd.DataFrame(rate_of_change_ppb).to_csv(file + " rate of change (ppb.s\u207B\u00b9)"+folder_name+".csv", index=False,
                                                 header=False)
