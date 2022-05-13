@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def compare(skip_num, SOA_list, time_column, start_time, end_time, particulate_phase_mass_SOA, time_interval, file_name, sheet):
+def compare(skip_num, SOA_list, time_column, start_time, end_time, particulate_phase_mass_SOA, time_interval, file_name, sheet, folder_name):
     # skip_num: number of lines of header in observation file to skip, given by user
     # SOA_list: the list contains names of all SOA components (e.g. ["MOOOA", "LOOOA", "OOA"])
     # time_column: name of the column that contains detailed observation time, given by user (e.g. "DateTime")
@@ -43,5 +43,5 @@ def compare(skip_num, SOA_list, time_column, start_time, end_time, particulate_p
     comparison = pd.DataFrame({'observation time': observation_time,
                                'simulation (ug/m3)': SOA_total_average,
                                'observation (ug/m3)': observation_data})
-    comparison.to_csv("comparison between simulation and observation.csv", index=False)
+    comparison.to_csv("comparison between simulation and observation"+folder_name+".csv", index=False)
 
